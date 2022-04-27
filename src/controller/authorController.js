@@ -1,83 +1,60 @@
-const authorModel=require("../model/authorModel")
-const validator =require("../validator/validator.js")
+const AuthorModel = require("../module/authorModel")
 
-const author = async function (req, res){
+const createAuthor = async (req, res) => {
+    try {
+        
+        const validateEmail = (email) => {
+            return String(email)
+              .toLowerCase()
+              .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              );
+          };  
 
-    try{
 
-        const details = req.body
+          const validatePassword = (password) => {
+            return String(password)
+              .match(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+              );
+          }; 
+        const data = req.body
 
-        if(!validator.isValidRequestBody(details)){
-
-            res.status(400).send({status:false, msg:"Please provide author details"})
-
+        if(Object.keys(data).length==0){
+            return res.send({msg:"author details not given"})//details is given or not
         }
 
-        const {fname, lname, title, email, password} = details
+        if (!data.fname) 
+            return res.status(400).send("first name is missing")
+        if (!data.lname) 
+            return res.status(400).send("last name is missing")
+        if (!data.email) 
+            return res.status(400).send("email is missing")
+        if (!data.password) 
+            return res.status(400).send("password is missing")
 
-        if (!validator.isValid(fname)){
 
-            return res.status(400).send({status:false, msg:"please provide first name"})
 
+        if(!validateEmail(data.email)){
+                return res.status(400).send({status:false,msg:"Invaild E-mail id "})//email validation
+            }
+        
+        if(!validatePassword(data.password)){
+                return res.status(400).send({status:false,msg:"password should contain atleast one number,one special character and one capital letter"})//password validation
+            }//password validation
+
+        const email = await AuthorModel.findOne({ email: data.email })//email exist or not
+        if (!email){
+             const author = await AuthorModel.create(data)
+             return res.status(201).send({ msg: author })
         }
-
-        if (!validator.isValid(lname)){
-
-            return res.status(400).send({status:false, msg:"please provide last name"})
-
-        }
-
-        if (!validator.isValid(title)){
-
-            return res.status(400).send({status:false, msg:"please provide title"})
-
-        }
-
-        if (!validator.isValid(email)){
-
-            return res.status(400).send({status:false, msg:"please provide email"})
-
-        }
-        if (!validator.isValidEmail(email)){
-
-            return res.status(400).send({status:false, msg:"please provide valid email"})
-
-        }
-        const emailUsed = await authorModel.findOne({email})
-
-        if(emailUsed){
-
-            return res.status(400).send({status:false, msg:`Email Id ${email} already exists`})
-
-        }
-
-        if (!validator.isValid(password)){
-
-            return res.status(400).send({status:false, msg:"please provide password"})
-
-        }
-
-        if (!validator.isValidTitle(title)){
-
-            return res.status(400).send({status:false, msg:"title should be Mr, Miss or Mrs"})
-
-        }
-
-
-      
-
-        const data = await authorModel.create(details)  //creating the author details
-
-        res.status(201).send({status: true, msg : "Author created and details saved successfully", data:data})
-
+        res.status(404).send({ msg: "email already exist" })
     }
-
-    catch(err){
-
-        res.status(500).send({status:false, error : err.message})
-
-    }              
-
+    catch (err) {
+        res.status(500).send({ error: err.message })
+    }
 }
 
-module.exports.author = author
+module.exports = {createAuthor}
+
+
