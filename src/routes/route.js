@@ -1,13 +1,14 @@
+const { Router } = require('express');
 const express = require('express');
 const router = express.Router();
 //const mongoose = require('mongoose')
 
 const authorController = require("../controller/authorController")
 const blogController = require("../controller/blogController")
-
+const loginController = require("../controller/loginController")
 const middleware = require("../middleware/middleware.js")
 
-router.post("/login",authorController.login)
+router.post("/login",loginController.userlogin)
 
 router.post("/authors",authorController.createAuthor)
 
@@ -21,4 +22,4 @@ router.delete("/blogs/:blogId",middleware.authentication,middleware.authorizatio
 
 router.delete("/deleteQuery",middleware.authentication, blogController.deleteParams)
 
-module.exports = router;
+module.exports = Router;
