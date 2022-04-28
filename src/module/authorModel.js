@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 
          type : String,
 
-         required : [true,"fname is required"],
+         required : [true,"efname is rquired"],
 
          trim : true
 

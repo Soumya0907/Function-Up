@@ -27,6 +27,7 @@ const objectId = mongoose.Schema.Types.ObjectId
         trim : true
     },
     "subcategory" : ["String"],
+   
     "deletedAt" : {
         type:Date,
        

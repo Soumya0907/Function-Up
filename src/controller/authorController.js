@@ -1,5 +1,8 @@
 const AuthorModel = require("../module/authorModel")
 
+//............................................1ST API (POST/Create Author)...........................................................
+
+
 const createAuthor = async (req, res) => {
     try {
         
@@ -7,7 +10,7 @@ const createAuthor = async (req, res) => {
             return String(email)
               .toLowerCase()
               .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                /^(^<>([()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
               );
           };  
 
@@ -54,6 +57,8 @@ const createAuthor = async (req, res) => {
         res.status(500).send({ error: err.message })
     }
 }
+
+    
 
 module.exports = {createAuthor}
 
